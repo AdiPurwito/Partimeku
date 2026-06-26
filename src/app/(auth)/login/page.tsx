@@ -1,13 +1,11 @@
 "use client"
-
-import { useState, useTransition } from "react"
+import { useState, useTransition, Suspense } from "react"
 import Link from "next/link"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
 import { login } from "../actions"
-
 import { Button } from "@/components/ui/button"
 import {
   Form,
@@ -25,7 +23,7 @@ const loginSchema = z.object({
   password: z.string().min(6, { message: "Password minimal 6 karakter" }),
 })
 
-export default function LoginPage() {
+function LoginForm() {
   const [error, setError] = useState<string | null>(null)
   const [isPending, startTransition] = useTransition()
   const [showPassword, setShowPassword] = useState(false)
@@ -35,10 +33,7 @@ export default function LoginPage() {
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
   })
 
   function onSubmit(values: z.infer<typeof loginSchema>) {
@@ -47,16 +42,11 @@ export default function LoginPage() {
       const formData = new FormData()
       formData.append("email", values.email)
       formData.append("password", values.password)
-
       const result = await login(formData)
-
       if (result?.error) {
         setError("Email atau password salah. Silakan coba lagi.")
         return
       }
-
-      // Hard navigation to ensure cookies are sent with the request
-      // If user came from a protected page (?redirect=...), send them back there
       if (redirectTo) {
         window.location.href = redirectTo
       } else if (result?.redirectTo) {
@@ -75,17 +65,14 @@ export default function LoginPage() {
           Masuk untuk melanjutkan perjalanan karir part-time kamu.
         </p>
       </div>
-
       {error && (
         <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-400">
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
           <p>{error}</p>
         </div>
       )}
-
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-
           <FormField
             control={form.control}
             name="email"
@@ -107,7 +94,6 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="password"
@@ -115,10 +101,7 @@ export default function LoginPage() {
               <FormItem>
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-sm font-medium text-zinc-300">Password</FormLabel>
-                  <Link
-                    href="/forgot-password"
-                    className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
-                  >
+                  <Link href="/forgot-password" className="text-xs font-medium text-indigo-400 hover:text-indigo-300 transition-colors">
                     Lupa password?
                   </Link>
                 </div>
@@ -146,25 +129,19 @@ export default function LoginPage() {
               </FormItem>
             )}
           />
-
           <Button
             type="submit"
             disabled={isPending}
             className="mt-2 h-11 w-full rounded-xl bg-indigo-600 font-semibold text-white transition-all hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-600/30 disabled:opacity-50"
           >
             {isPending ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Memproses...
-              </>
+              <><Loader2 className="mr-2 h-4 w-4 animate-spin" />Memproses...</>
             ) : (
               "Masuk ke Akun"
             )}
           </Button>
-
         </form>
       </Form>
-
       <p className="mt-6 text-center text-sm text-zinc-600">
         Belum punya akun?{" "}
         <Link href="/register" className="font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
@@ -172,5 +149,13 @@ export default function LoginPage() {
         </Link>
       </p>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div className="text-white">Loading...</div>}>
+      <LoginForm />
+    </Suspense>
   )
 }
