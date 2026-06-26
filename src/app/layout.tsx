@@ -5,11 +5,14 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import { Analytics } from "@vercel/analytics/react";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
+
 export const metadata: Metadata = {
   title: "Partimeku — Lowongan Part-time #1 untuk Mahasiswa Indonesia",
   description:
@@ -25,6 +28,7 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -45,6 +49,7 @@ export default function RootLayout({
           <Footer />
           <Toaster position="top-center" closeButton richColors />
         </TooltipProvider>
+        <Analytics />
       </body>
     </html>
   );
