@@ -5,18 +5,19 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/sonner";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
-
 export const metadata: Metadata = {
   title: "Partimeku — Lowongan Part-time #1 untuk Mahasiswa Indonesia",
   description:
     "Platform lowongan kerja paruh waktu terbaik untuk mahasiswa Indonesia. Temukan pekerjaan sampingan yang fleksibel dan sesuai jadwal kuliahmu.",
   keywords: ["part-time", "lowongan kerja", "mahasiswa", "kerja sampingan", "Indonesia"],
+  verification: {
+    google: "ob9f9UTCnETabOmGwOLtJr4VR8PMuIzNGX82iIuhAxY",
+  },
   openGraph: {
     title: "Partimeku — Lowongan Part-time #1 untuk Mahasiswa Indonesia",
     description:
@@ -24,7 +25,6 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{
